@@ -1,0 +1,460 @@
+<!-- 
+----------------------------
+
+----------------------------
+	자바스크립트로 HTML 입력양식에 입력된(선택된) 데이터의 ***[유효성 체크]***
+	유효성체크란 DB에 저장될 수 있는 데이터인가 아닌가를 체크하는 일.
+	----------------------------
+	자바스크립트로 유효성 체크 시 장점
+	----------------------------
+		클라이언트 컴퓨터에서 자바스크립트가 실행되므로 서버에 부담을 주지 않는다.
+	----------------------------
+	자바스크립트로 유효성 체크 시 단점
+	----------------------------
+		클라이언트 컴퓨터에서 자바스크립트가 실행되므로 자바스크립트 소스를 볼 수 있다.
+		소스의 보안에 관련된 내용이 있거나 회사 고유 업무 내용이 있으면 허걱..클 난다.
+	----------------------------
+	서버에서 자바로 유효성 체크 시 장점
+	----------------------------
+		자바 소스의 보안에 관련된 내용이있거나 회사 고유 업무 내용이 있어도 클라이언트에게 노출되지않는다.
+	----------------------------
+	자바스크립트로 유효성 체크 시 단점
+	----------------------------
+		서버에 부담을 준다. 서버 퍼포먼스에 영향을 준다.
+
+-->
+<html>
+<head><meta charset="utf-8">
+	<title></title>
+	<script type="text/javascript">
+
+		//*****************************************
+		// 매개변수로 들어오는 문자열의 패턴을 검사하여 true 또는 false를 리턴하는 함수선언
+		//*****************************************
+		function checkPattern(
+			str,		//검사할 문자열
+			regExpObj,	// 문자열의 패턴을 검사할 RegExp 객체
+			alertMsg	// 문자열의 패턴이 틀릴 경우 보여줄 alert 상자 안의 경고문자열
+
+			){
+			var result = regExpObj.test(str);
+			if(result==false){
+				alert(alertMsg);
+			}
+			return result;
+		}
+
+
+		//*****************************************
+		function checkID(str){
+			return checkPattern(
+				str
+				,/^[a-z][a-z0-9_]{5,14}$/,"[아이디] 입력 규칙에 맞지 않음. 재 입력 바람! \n <1>영소문자 또는 숫자 또는 언더바(_)로 구성되어야.\n<2>글자수는 7-15사이여야함\n<3>첫글자는 영문이여야함.");
+		}
+
+
+		//*****************************************
+		function checkPwd(str){
+			return checkPattern(
+				str
+				,/^[a-z0-9_]{8,15}$/,"[암호] 입력 규칙에 맞지 않음. 재 입력 바람! \n <1>영소문자 또는 숫자 구성되어야함.\n<2>글자수는 8-15사이여야함");
+		}
+
+		//*****************************************
+		function getCheckedCnt(arrObj){
+
+			var cnt = 0;
+			for( var i = 0; i<arrObj.length; i++){
+				if((arrObj[i].checked)==true){
+
+					cnt++
+				}
+			}
+			return cnt;
+		}
+
+		//*****************************************
+		function is_valid_YMD(year, month, date){
+
+			//매개변수로 들어온 숫자 문자를 숫자로 바꾸기
+				// 존재하는 년월일인지 체크하기
+				// 생일 날짜를 관리하는 Date 객체 생성하기
+				// 숫자문자를 정수 숫자로 바꿔주는 함수
+				// parseInt( ? ,10) //10은 10진수라는 뜻.
+			year = parseInt(year,10);
+			month = parseInt(month,10);
+			date = parseInt(date,10);
+
+
+			// 생일 날짜를 관리하는 Date 객체 생성하기
+			var birthday = new Date(year, month-1, date);
+
+
+			// Date 객체에서 년, 월, 일 얻기
+			var year2 = birthday.getFullYear();
+
+			var month2 = birthday.getMonth()+1;
+			
+			var date2 = birthday.getDate();
+
+			// 만약 년도가 서로 다르거나 또는 월이 서로 다르거나 또는 일이 서로 다르면
+			if(year!=year2||month!=month2||date!=date2){
+				return false;
+			}else{
+				return true;
+			}
+		}
+
+
+
+
+
+
+
+
+
+		//*****************************************
+		// 존재하는 년월일 인지의 여부를 체크하는 함수
+		//*****************************************
+		function checkBirthday(){
+			// 선택한 생일년도 얻기
+			var year = document.memberRegForm.birth_year.value;
+			// 선택한 생일월 얻기
+			var month = document.memberRegForm.birth_month.value;
+			// 선택한 생일일 얻기
+			var date = document.memberRegForm.birth_date.value;
+
+			//만약에 년도가 없거나 월이 없거나 일이 없으면 함수 중단하기
+			if(year==""||month==""||date==""){
+				return;
+			}
+
+			if(is_valid_YMD(year, month, date)==false){
+			/*	alert("선택하신 생일의 년월일이 존재하지 않습니다.");
+				document.memberRegForm.birth_year.value="";
+				document.memberRegForm.birth_month.value="";
+				document.memberRegForm.birth_date.value="";
+			*/
+			var xxx = confirm("존재하지 않는 일수입니다. 마지막 일수로 바꿀까요?")
+
+			//예라고 대답하면?
+			if(xxx){
+				// 일에 마지막 일을 선택하는 자스 코딩
+				var myLastDate = new Date(year,month,0)
+				var myLastDate_1 = myLastDate.getDate();
+
+
+
+
+			//아니오라고 대답하면?
+			}else{
+				document.memberRegForm.birth_year.value="";
+				document.memberRegForm.birth_month.value="";
+				document.memberRegForm.birth_date.value="";
+
+			}
+
+			}
+
+		}
+
+
+
+
+
+
+		//*****************************************
+		// 저장 버튼을 누르면 호출되는 checkForm 함수 선언
+		// 입력양식들의 유효성 체크를 한 후 모두 유효성에 합당하면
+		// 서버로 전송할 것이다
+		//*****************************************
+		function checkForm(){
+
+
+			
+			//+++++++++++++++++++++++++
+			// 아이디값 유효성 체크하기
+			//+++++++++++++++++++++++++
+			//사용자가 웹브라우저 화면에서 입력한 [아이디값]을 가져와 uid 변수에 저장
+			//------------------------------
+			var uid = document.memberRegForm.uid.value;
+
+			if(checkID(uid)==false){
+				document.memberRegForm.uid.value = "";
+				document.memberRegForm.uid.focus();
+				return;
+			}
+
+
+
+
+			//+++++++++++++++++++++++++
+			// 암호값 유효성 체크하기
+			//+++++++++++++++++++++++++
+			//사용자가 웹브라우저 화면에서 입력한 [암호값]을 가져와 pwd 변수에 저장
+			//------------------------------
+			var pwd = document.memberRegForm.pwd.value;
+
+			if(checkPwd(pwd)==false){
+				document.memberRegForm.pwd.value = "";
+				document.memberRegForm.pwd.focus();
+				return;
+			}
+
+
+
+			//+++++++++++++++++++++++++
+			// 암호값 확인 유효성 체크하기
+			//+++++++++++++++++++++++++
+			//사용자가 웹브라우저 화면에서 입력한 [암호값]을 가져와 pwd 변수에 저장
+			//------------------------------
+			var pwd_confirm = document.memberRegForm.pwd_confirm.value;
+
+			//------------------------------
+			// 암호와 암호확인값이 다르면 함수 중단하기.
+			//------------------------------
+			if(pwd != pwd_confirm){
+				alert("[암호]와 [암호확인값]이 다릅니다.")
+				document.memberRegForm.pwd_confirm.value = "";
+				document.memberRegForm.pwd_confirm.focus();
+				return;
+			}
+
+
+
+
+			//++++++++++++++++++++++++++++++++++++++++++++++++++
+			// 스킬 유효성 체크. 1개 이상 선택하기
+			//++++++++++++++++++++++++++++++++++++++++++++++++++
+			//getCheckedCnt 함수 호출하여 얻은 스킬의 체크 개수가 0개면 경고하고 함수 중단하기
+			//------------------------------
+
+			if(getCheckedCnt(document.memberRegForm.skill)==0){
+				alert("스킬은 한개 이상 선택하세요~");
+				return;
+			}
+
+
+
+
+			//++++++++++++++++++++++++++++++++++++++++++++++++++
+			// 학력 유효성 체크. 1개 선택하기
+			//++++++++++++++++++++++++++++++++++++++++++++++++++
+			//getCheckedCnt 함수 호출하여 얻은 학력의 체크 개수가 0개면 경고하고 함수 중단하기
+			//------------------------------
+			var schoolCnt = 0;
+
+			if(getCheckedCnt(document.memberRegForm.school)==0){
+				alert("최종학력은 한개 선택하세요~");
+				return;
+			}
+
+						// 위 코딩은 아래처럼 원시적으로도 가능하다
+						// <방법1>
+						// var schoolCnt = 0;
+						// if(document.memberRegForm.school[0].checked==true){schoolCnt++;}
+						// if(document.memberRegForm.school[1].checked==true){schoolCnt++;}
+						// if(document.memberRegForm.school[2].checked==true){schoolCnt++;}
+						// if(schoolCnt==0){
+						// 	alert("최종학력은 한개 선택하세요~");
+						//  return;
+						// }
+
+
+						// <방법2>
+						// var schoolCnt = 0;
+						// for(var i=0; i<document.memberRegForm.school.length;i++){
+						// if(document.memberRegForm.school[0].checked==true){schoolCnt++;}
+						// if(document.memberRegForm.school[1].checked==true){schoolCnt++;}
+						// if(document.memberRegForm.school[2].checked==true){schoolCnt++;}
+						// }
+						// if(schoolCnt==0){
+						// 	alert("최종학력은 한개 선택하세요~");
+						//  return;
+						// }
+
+
+
+
+			//++++++++++++++++++++++++++++++++++++++++++++++++++
+			// 거주지 유효성 체크.
+			//++++++++++++++++++++++++++++++++++++++++++++++++++
+			//선택한 [거주지]를 변수 addr 에 저장.
+			//------------------------------
+			var addr = document.memberRegForm.addr.value;
+
+			if(addr==""){
+				alert("거주지 입력요망");
+				return;
+			}
+
+
+
+
+
+
+
+
+
+				
+		}
+		
+	</script>
+</head>
+<body>
+	<!----------------------------------------------------->
+	<!-- 입력 양식 관련 태그 들을 하나로 묶기 위한 form 태그 선언하기 -->
+	<!----------------------------------------------------->
+	<form name="memberRegForm">
+		<!------------------------------->
+		<table border="1" cellpadding="5">
+		<!------------------------------->
+			<caption>회원가입</caption>
+			<tr>
+				<th>아이디
+				<td><input type="text" name="uid" size="20" maxlength="15" value="">
+			</tr>
+			<!----------------------------------------------------->
+			<tr>
+				<th>암호
+				<td><input type="text" name="pwd" size="20" maxlength="15" value="">
+			</tr>
+			<!----------------------------------------------------->
+			<tr>
+				<th>암호확인
+				<td><input type="text" name="pwd_confirm" size="20" maxlength="15" value="">
+			</tr>
+			<!----------------------------------------------------->
+			<tr>
+				<th>소유스킬
+				<td>
+					<input type="checkbox" name="skill" value="Java">Java
+					<input type="checkbox" name="skill" value="JSP">JSP
+					<input type="checkbox" name="skill" value="Spring">Spring
+					<input type="checkbox" name="skill" value="Oracle">Oracle
+					<input type="checkbox" name="skill" value="mybatis">mybatis
+			</tr>
+
+			<!----------------------------------------------------->
+			<tr>
+				<th>최종학력
+				<td>
+					<input type="radio" name="school" value="고졸">고졸
+					<input type="radio" name="school" value="중졸">중졸
+					<input type="radio" name="school" value="대졸">대졸
+			</tr>
+
+			<!----------------------------------------------------->
+			<tr>
+				<th>거주지
+				<td>
+					<select name="addr">
+						<option value="">--선택--
+						<option value="서울">서울
+						<option value="서울">경기
+						<option value="서울">인천
+					</select>					
+			</tr>
+
+			<!----------------------------------------------------->
+			<tr><!-- onchange : 내용물을 바꿔 선택했을때 -->
+				<th>생일
+				<td>
+					<select name="birth_year" onchange="checkBirthday();">
+						<script type="text/javascript">
+							document.write("<option value=''>");
+
+							var today = new Date()
+							var thisYear = today.getFullYear();
+
+
+							for(var i=thisYear; i>=1990; i--){
+								document.write("<option value='"+i+"'>"+i);
+							}
+							// <역순>
+							// for(var i=1990; i<=thisYear; i++){
+							// 	 document.write("<option value='"+i+"'>"+i);
+							// }
+						</script>
+					</select>년
+
+					<select name="birth_month" onchange="checkBirthday();">
+						<script type="text/javascript">
+							document.write("<option value=''>");
+							for(var i=1; i<=12;i++){
+								if(i>=10){
+								document.write("<option value='"+i+"'>"+i);
+								}else{
+								document.write("<option value='0"+i+"'>"+i);
+								}
+							}
+						</script>
+								<!-- 
+								<option value="01">01
+								<option value="02">02
+								<option value="03">03
+								<option value="04">04
+								<option value="05">05
+								<option value="06">06
+								<option value="07">07
+								<option value="08">08
+								<option value="09">09
+								<option value="10">10
+								<option value="11">11
+								<option value="12">12 
+								-->
+					</select>월		
+					<select name="birth_date" onchange="checkBirthday();">
+						<script type="text/javascript">
+							document.write("<option value=''>");
+							for(var i=1; i<=31;i++){
+								if(i>=10){
+								document.write("<option value='"+i+"'>"+i);
+								}else{
+								document.write("<option value='0"+i+"'>"+i);
+								}
+							}
+						</script>
+								
+					</select>일	
+			</tr>
+
+
+
+
+
+
+
+		<!------------------------------->
+		</table>
+		<!------------------------------->
+	</form>
+
+	<input type="button" value="저장" onclick="checkForm();">
+</body>
+</html>
+
+
+
+<!-- 
+
+	1. 각자 컴퓨터로 네이버 서버에 접속 -> 네이버 초기화면에서 html을 받았다.
+	2. 자바
+
+ -->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
